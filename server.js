@@ -3,8 +3,8 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
-
-// const db = require("./models");
+// restore following line after models are setup
+const db = require("./models");
 
 const app = express();
 // dev is for development environment in morgan
@@ -27,6 +27,14 @@ app.get("/api/workouts", (req, res) => {
 
 app.get("/api/workouts/range", (req, res) => {
   res.send("workouts range working");
+});
+
+app.get("/exercise", (req, res) => {
+  res.send("exercise route working");
+});
+
+app.get("/stats", (req, res) => {
+  res.send("stats route working");
 });
 
 app.listen(PORT, () => {
