@@ -33,9 +33,22 @@ app.get("/api/workouts", (req, res) => {
 });
 
 //create new exercise
-app.post("/api/workouts", ({body}, res) => {
+app.post("/workouts", ({body}, res) => {
+  db.Workout.create(body)
+  // id of the new exercise we just created, gets pushed into the workout field into the inside the workout it is associated with 
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+// post route to create an existing exercise
+app.post("/exercise", ({body}, res) => {
   db.Workout.create(body)
   // id of the new exercise we just created, gets pushed in to the workout field into the inside the workout it is associated with 
+    //.then(({_id}) => db.Workout.create({ _id: req.params.id }, { $push: { workout: _id } }, { type: "Benchpress" }))
     .then(dbWorkout => {
       res.json(dbWorkout);
     })
@@ -56,7 +69,22 @@ app.post("/exercise/:id", ({body}, res) => {
       res.json(err);
     });
 });
+// except limit to last few workouts. put this below
+// app.get("/api/workouts", (req, res) => {
+//   db.Workout.find({})
+//   .then(dbWorkout => {
+//     console.log(dbWorkout);
+//     res.json(dbWorkout);
+    
+//     // res.send("api workouts working");// this works in postman with 3000/api/workouts
+//   })
+//   .catch(err => {
+//     res.status(404).send('Sorry, cant find that');
+//     res.json(err);
+//   });
+// });
 
+//filters routes that I get back, for example, the last 5 or 10
 app.get("/api/workouts/range", (req, res) => {
   res.send("workouts range working"); // this works in postman with 3000/api/workouts/range
 });
@@ -67,7 +95,7 @@ app.get("/exercise", (req, res) => {
 
 // post route to add a new exercise
 app.post("/exercise", (req, res) => {
-  res.sendFile(path.join(__dirname + "./public/exercise.html"));
+  res.sendFile(path.join(__dirname + "/public/exercise.html"));
   //res.send("exercise route working");
 });
 
@@ -76,7 +104,7 @@ app.post("/exercise", (req, res) => {
 //});
 
 app.get("/stats", (req, res) => {
-  
+  res.sendFile(path.join(__dirname + "/public/stats.html"));
   // res.send("stats route working");
 });
 
