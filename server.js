@@ -17,19 +17,52 @@ app.use(express.static("public"));
 // name of database goes after localhost
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
 
-// get route to find all workouts
+// catch all route
+app.get("/", (req, res) => {
+  //res.sendFile(path.join(__dirname + "./public/index.html"));
+  res.send("root route working");
+});
+
+app.get("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/exercise.html"));
+});
+
+app.get("/stats", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/stats.html"));
+  // res.send("stats route working");
+});
+
+// get route to find all workouts, this route is working with Postman
 app.get("/api/workouts", (req, res) => {
   db.Workout.find({})
   .then(dbWorkout => {
     console.log(dbWorkout);
     res.json(dbWorkout);
-    
-    // res.send("api workouts working");// this works in postman with 3000/api/workouts
   })
   .catch(err => {
     res.status(404).send('Sorry, cant find that');
     res.json(err);
   });
+});
+
+// except limit to last few workouts. put this below
+// app.get("/api/workouts", (req, res) => {
+//   db.Workout.find({})
+//   .then(dbWorkout => {
+//     console.log(dbWorkout);
+//     res.json(dbWorkout);
+    
+//     // res.send("api workouts working");// this works in postman with 3000/api/workouts
+//   })
+//   .catch(err => {
+//     res.status(404).send('Sorry, cant find that');
+//     res.json(err);
+//   });
+// });
+
+//filters routes that I get back, for example, the last 5 or 10
+app.get("/api/workouts/range", (req, res) => {
+  res.send("workouts range working"); // this works in postman with 3000/api/workouts/range
 });
 
 //create new exercise
@@ -57,6 +90,12 @@ app.post("/exercise", ({body}, res) => {
     });
 });
 
+// post route to add a new exercise
+app.post("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/exercise.html"));
+  //res.send("exercise route working");
+});
+
 // post route to update an existing exercise
 app.post("/exercise/:id", ({body}, res) => {
   db.Workout.create(body)
@@ -69,50 +108,10 @@ app.post("/exercise/:id", ({body}, res) => {
       res.json(err);
     });
 });
-// except limit to last few workouts. put this below
-// app.get("/api/workouts", (req, res) => {
-//   db.Workout.find({})
-//   .then(dbWorkout => {
-//     console.log(dbWorkout);
-//     res.json(dbWorkout);
-    
-//     // res.send("api workouts working");// this works in postman with 3000/api/workouts
-//   })
-//   .catch(err => {
-//     res.status(404).send('Sorry, cant find that');
-//     res.json(err);
-//   });
-// });
-
-//filters routes that I get back, for example, the last 5 or 10
-app.get("/api/workouts/range", (req, res) => {
-  res.send("workouts range working"); // this works in postman with 3000/api/workouts/range
-});
-
-app.get("/exercise", (req, res) => {
-  res.sendFile(path.join(__dirname + "/public/exercise.html"));
-});
-
-// post route to add a new exercise
-app.post("/exercise", (req, res) => {
-  res.sendFile(path.join(__dirname + "/public/exercise.html"));
-  //res.send("exercise route working");
-});
 
 //app.get("/tables", function(req, res) {
 //  res.sendFile(path.join(__dirname, "../public/tables.html"));
 //});
-
-app.get("/stats", (req, res) => {
-  res.sendFile(path.join(__dirname + "/public/stats.html"));
-  // res.send("stats route working");
-});
-
-// catch all route
-app.get("/", (req, res) => {
-  //res.sendFile(path.join(__dirname + "./public/index.html"));
-  res.send("root route working");
-});
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
